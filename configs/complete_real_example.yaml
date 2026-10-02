@@ -1,0 +1,41 @@
+study_id: complete_real_example_v2
+folds: 5
+seeds:
+- 42
+- 2026
+strategies:
+- molecule
+- scaffold
+representations:
+- morgan
+- rdkit_descriptors
+models:
+- linear
+- random_forest
+- extra_trees
+members: 5
+trees: 150
+workers: 2
+confidence: 0.9
+endpoints:
+- name: KSOL
+  task: regression
+  sources:
+  - ../data/real_demo/KSOL.csv
+  historical_test: ../data/real_demo/KSOL_historical_structures.csv
+  evaluation_scale: log10
+  cliff_difference: 1.0
+- name: LogD
+  task: regression
+  sources:
+  - ../data/real_demo/LogD.csv
+  historical_test: ../data/real_demo/LogD_historical_structures.csv
+  evaluation_scale: none
+  cliff_difference: 1.0
+- name: BBBP
+  task: classification
+  sources:
+  - ../data/real_demo/BBBP.csv
+  historical_test: ../data/real_demo/BBBP_historical_structures.csv
+  evaluation_scale: none
+  cliff_difference: 1.0

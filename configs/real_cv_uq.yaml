@@ -1,0 +1,32 @@
+study_id: real_cv_uq_v1
+folds: 5
+seeds: [42]
+strategies: [molecule, scaffold]
+representations: [morgan, rdkit_descriptors]
+models: [linear, random_forest, extra_trees]
+members: 5
+trees: 150
+workers: 2
+confidence: 0.9
+endpoints:
+  - name: KSOL
+    task: regression
+    sources:
+      - ../outputs/current_benchmark/ksol/data/development.csv
+      - ../outputs/current_benchmark/ksol/data/validation.csv
+    historical_test: ../outputs/current_benchmark/ksol/data/held_out_test.csv
+    smiles_column: SMILES
+    target_column: target_model
+    raw_column: target_raw
+    evaluation_scale: log10
+    cliff_difference: 1.0
+  - name: BBBP
+    task: classification
+    sources:
+      - ../outputs/current_benchmark/bbbp_50epoch/data/development.csv
+      - ../outputs/current_benchmark/bbbp_50epoch/data/validation.csv
+    historical_test: ../outputs/current_benchmark/bbbp_50epoch/data/held_out_test.csv
+    smiles_column: smiles
+    target_column: target_model
+    raw_column: target_raw
+    evaluation_scale: none

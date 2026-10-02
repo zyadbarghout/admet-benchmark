@@ -1,0 +1,35 @@
+# KSOL is not already on a log scale, so target_transform applies log10 exactly
+# once to every split before model selection and held-out evaluation.
+run_name: ksol_substituted_phenyl_regression
+task: regression
+seed: 42
+output_dir: ../outputs/regression_ksol_substituted_phenyl
+
+dataset:
+  kind: openadmet
+  # Leave this unset on another machine to use the public Hugging Face dataset.
+  cache_root: ${OPENADMET_DATASET_CACHE_ROOT}
+  target: KSOL
+  smiles_column: SMILES
+  name_column: Molecule Name
+  target_transform: challenge
+
+chemical_filter:
+  smarts: c1ccccc1
+  substitution: substituted
+
+features:
+  radius: 2
+  n_bits: 512
+  include_rdkit_descriptors: true
+
+hpo:
+  cv_folds: 3
+  n_iter: 3
+  n_jobs: auto
+  scoring: neg_mean_absolute_error
+
+models:
+  - ridge
+  - extra_trees
+  - random_forest

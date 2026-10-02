@@ -1,0 +1,17 @@
+sample_id,molecule_id,smiles,endpoint,partition,repeat,fold,split_strategy,label,probability_random_forest,probability_chemprop
+r0f0-a,ethanol,CCO,BBBP,validation,0,0,scaffold,0,0.12,0.08
+r0f0-b,ethylamine,CCN,BBBP,validation,0,0,scaffold,0,0.34,0.22
+r0f0-c,benzene,c1ccccc1,BBBP,validation,0,0,scaffold,1,0.72,0.81
+r0f0-d,toluene,Cc1ccccc1,BBBP,validation,0,0,scaffold,1,0.58,0.69
+r0f1-a,propane,CCC,BBBP,validation,0,1,scaffold,0,0.18,0.11
+r0f1-b,acetic-acid,CC(=O)O,BBBP,validation,0,1,scaffold,0,0.46,0.32
+r0f1-c,pyridine,c1ccncc1,BBBP,validation,0,1,scaffold,1,0.63,0.74
+r0f1-d,phenol,Oc1ccccc1,BBBP,validation,0,1,scaffold,1,0.52,0.61
+r1f0-a,methanol,CO,BBBP,validation,1,0,scaffold,0,0.20,0.14
+r1f0-b,methylamine,CN,BBBP,validation,1,0,scaffold,0,0.39,0.28
+r1f0-c,cyclohexane,C1CCCCC1,BBBP,validation,1,0,scaffold,1,0.66,0.79
+r1f0-d,piperidine,C1CCNCC1,BBBP,validation,1,0,scaffold,1,0.54,0.64
+r1f1-a,butane,CCCC,BBBP,validation,1,1,scaffold,0,0.17,0.10
+r1f1-b,acetamide,CC(N)=O,BBBP,validation,1,1,scaffold,0,0.44,0.30
+r1f1-c,chlorobenzene,Clc1ccccc1,BBBP,validation,1,1,scaffold,1,0.70,0.84
+r1f1-d,aniline,Nc1ccccc1,BBBP,validation,1,1,scaffold,1,0.57,0.67

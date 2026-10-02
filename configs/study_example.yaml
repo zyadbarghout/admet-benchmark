@@ -1,0 +1,45 @@
+schema_version: 1
+study_id: synthetic-demo
+evidence_level: screening
+dataset:
+  path: ../data/tutorial/study_observations.csv
+  sha256: f0e784a0026ddc387bde7e9a808f141d9fe57da4f9342aa871681e5972c23fef
+  source: Author-created synthetic measurements for software demonstration; not experimental
+    ADMET data
+  license: CC0-1.0
+identity_policy: rdkit_canonical_isomeric_v1
+endpoints:
+- name: A
+  task: regression
+  units: synthetic
+  transform: none
+  primary_metric: mae
+  practical_difference: 0.1
+- name: B
+  task: regression
+  units: synthetic
+  transform: none
+  primary_metric: mae
+  practical_difference: 0.1
+models:
+- baseline
+- tree
+split:
+  strategy: molecule
+  test_seed: 42
+  repeat_seeds:
+  - 11
+  - 22
+  - 33
+  test_fraction: 0.2
+  validation_fraction: 0.2
+  calibration_fraction: 0.2
+  minimum_molecules: 2
+  minimum_per_class: 1
+selection_policy: fixed_models_no_tuning
+test_policy: locked_until_protocol_final
+uq_methods:
+- none
+cohorts:
+- all
+compute_budget_cpu_hours: 1

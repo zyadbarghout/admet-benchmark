@@ -1,0 +1,5 @@
+output_dir: ../outputs/model_benchmark_suite
+experiments:
+  - benchmarks/ksol_model_arena.yaml
+  - benchmarks/bbbp_model_arena.yaml
+  - benchmarks/clintox_model_arena.yaml

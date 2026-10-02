@@ -1,0 +1,31 @@
+# Each split is a fully independent experiment: it re-runs HPO, validation
+# selection, full training, and one final held-out evaluation.
+output_dir: ../outputs/split_benchmark_suite
+experiments:
+  - config: benchmarks/ksol_model_arena.yaml
+    splits:
+      - strategy: random
+        test_size: 0.2
+      - strategy: scaffold
+        test_size: 0.2
+        group_split_attempts: 128
+      - strategy: butina
+        test_size: 0.2
+        butina_radius: 2
+        butina_n_bits: 2048
+        # Distance 0.4 corresponds to clustering molecules at Tanimoto >= 0.6.
+        butina_distance_threshold: 0.4
+        group_split_attempts: 128
+  - config: benchmarks/bbbp_model_arena.yaml
+    splits:
+      - strategy: random
+        test_size: 0.2
+      - strategy: scaffold
+        test_size: 0.2
+        group_split_attempts: 128
+      - strategy: butina
+        test_size: 0.2
+        butina_radius: 2
+        butina_n_bits: 2048
+        butina_distance_threshold: 0.4
+        group_split_attempts: 128

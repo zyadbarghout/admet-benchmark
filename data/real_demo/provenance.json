@@ -1,0 +1,35 @@
+{
+  "KSOL": {
+    "source_snapshots": {
+      "outputs/current_benchmark/ksol/data/development.csv": "9048cf35436a060da62344b30a6e42653aebc3cf018e610ff80fc7d284c194b1",
+      "outputs/current_benchmark/ksol/data/validation.csv": "b696a310a375eb3fb18ab974ae853868fbf3f93c03b571340f56b03eb942b18f"
+    },
+    "snapshot_sha256": "e803f4bb2d7ef84f00f5ad8ce6d714e1be1395dac04085aa318a422eaafe1899",
+    "rows": 5128,
+    "historical_structures_sha256": "17e9ed84400a8d8ee28a574b8c468f1d0bdb3b35b62bcad266d8640555ff71e5",
+    "origin": "openadmet/openadmet-expansionrx-challenge-data",
+    "selection": "Existing development and validation rows; historical test excluded"
+  },
+  "LogD": {
+    "source_snapshots": {
+      "outputs/current_benchmark/ksol/data/development.csv": "9048cf35436a060da62344b30a6e42653aebc3cf018e610ff80fc7d284c194b1",
+      "outputs/current_benchmark/ksol/data/validation.csv": "b696a310a375eb3fb18ab974ae853868fbf3f93c03b571340f56b03eb942b18f"
+    },
+    "snapshot_sha256": "338af7285c6ac8c4aea13c614dba9642be162a2772d92df5560cd0eb5de740eb",
+    "rows": 4934,
+    "historical_structures_sha256": "17e9ed84400a8d8ee28a574b8c468f1d0bdb3b35b62bcad266d8640555ff71e5",
+    "origin": "openadmet/openadmet-expansionrx-challenge-data",
+    "selection": "Measured rows in the existing KSOL development pool"
+  },
+  "BBBP": {
+    "source_snapshots": {
+      "outputs/current_benchmark/bbbp_50epoch/data/development.csv": "bb28b1df28cd368dae7e9362a5cc867c122a786af1b3945018127b4a6abfae56",
+      "outputs/current_benchmark/bbbp_50epoch/data/validation.csv": "9000b662e1995d74ab152b185125906ca3cfc7c80543d8f2d62a1467c795a0d8"
+    },
+    "snapshot_sha256": "db1abf1e2330e21709ea7368850a13e20eba3cbc2f910cf1df41ed1e379f0899",
+    "rows": 1631,
+    "historical_structures_sha256": "a89f82dfab224c572cebe971c591b1549e4fc0b19728a9bd04a679fa390b6c77",
+    "origin": "MoleculeNet BBBP, preserved local classification snapshot",
+    "selection": "Existing development and validation rows; historical test excluded"
+  }
+}

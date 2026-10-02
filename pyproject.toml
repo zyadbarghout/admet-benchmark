@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "admet-benchmark"
+version = "0.1.0"
+description = "Reproducible molecular regression and classification benchmarking"
+# Chemprop 2.x, used by the models extra, requires Python 3.11 or newer.
+requires-python = ">=3.11"
+dependencies = [
+    "datasets>=2.16",
+    "jsonschema>=4.18",
+    "matplotlib>=3.7",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "PyYAML>=6.0",
+    "rdkit>=2023.9",
+    "scikit-learn>=1.6",
+    "scikit-posthocs>=0.9,<1",
+    "scipy>=1.10",
+]
+
+[project.optional-dependencies]
+models = [
+    "chemprop>=2.3,<2.4",
+    "lightgbm>=4.5,<5",
+    # PyTorch 2.11+ currently rejects Chemprop's deterministic scatter-reduce
+    # path on Apple MPS. Keep reproducible hardware acceleration on macOS.
+    "torch>=2.1,<2.11; sys_platform == 'darwin'",
+    "xgboost>=2.1,<3",
+]
+test = ["pytest>=8"]
+browser = ["playwright>=1.49,<2"]
+visual = ["plotly>=5.0"]
+
+[project.scripts]
+admet-benchmark = "admet_benchmark.cli:main"
+admet-benchmark-arena = "admet_benchmark.benchmark:main"
+admet-benchmark-suite = "admet_benchmark.suite:main"
+admet-benchmark-dashboard = "admet_benchmark.dashboard:main"
+admet-chemical-report = "admet_benchmark.chemical_report:main"
+admet-cv = "admet_benchmark.cross_validation:main"
+admet-study = "admet_benchmark.study:main"
+admet-evaluate = "admet_benchmark.evaluate_cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+admet_benchmark = ["schemas/*.json", "report_assets/*.html", "report_assets/*.css", "report_assets/*.js"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

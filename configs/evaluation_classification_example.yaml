@@ -1,0 +1,35 @@
+schema_version: 1
+project_name: Example classification evaluation
+task: classification
+output_dir: ../outputs/evaluation_classification_example
+
+predictions:
+  path: ../data/example_classification_predictions.csv
+  columns:
+    sample_id: sample_id
+    molecule_id: molecule_id
+    smiles: smiles
+    endpoint: endpoint
+    partition: partition
+    observed: label
+    repeat: repeat
+    fold: fold
+    split_strategy: split_strategy
+  # Wide input is convenient when each model is stored in a separate column.
+  prediction_columns:
+    random_forest: probability_random_forest
+    chemprop: probability_chemprop
+  defaults:
+    preprocessing: raw
+
+# Thresholds are mandatory because thresholded metrics cannot be interpreted
+# without the decision policy used to create class labels.
+thresholds:
+  endpoints:
+    BBBP: 0.42
+
+statistics:
+  bootstrap_iterations: 1000
+  bootstrap_metrics: [roc_auc, pr_auc, mcc]
+  confidence_level: 0.95
+  seed: 42

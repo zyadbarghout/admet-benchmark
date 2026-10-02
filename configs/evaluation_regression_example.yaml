@@ -1,0 +1,34 @@
+# This command evaluates prepared predictions; it does not train or select a model.
+schema_version: 1
+project_name: Example repeated-CV regression evaluation
+task: regression
+output_dir: ../outputs/evaluation_regression_example
+
+predictions:
+  path: ../data/example_regression_predictions.csv
+  columns:
+    sample_id: sample_id
+    molecule_id: molecule_id
+    smiles: smiles
+    endpoint: endpoint
+    model: model
+    partition: partition
+    observed: observed
+    prediction: prediction
+    repeat: repeat
+    fold: fold
+    split_strategy: split_strategy
+    preprocessing: preprocessing
+
+# Values in the input are on their original physical scale. Both observations
+# and predictions are transformed exactly once before metrics are calculated.
+target_transform:
+  default: log10
+  endpoints:
+    LogD: none
+
+statistics:
+  bootstrap_iterations: 1000
+  bootstrap_metrics: [mae, relative_absolute_error]
+  confidence_level: 0.95
+  seed: 42

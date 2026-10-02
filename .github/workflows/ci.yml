@@ -1,0 +1,42 @@
+name: Validate package and offline report
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.12.10'
+          enable-cache: true
+      - run: uv sync --locked --python 3.12 --extra visual --extra test --extra browser
+      - run: uv run --no-sync playwright install --with-deps chromium
+      - name: Unit and offline browser checks
+        run: uv run --no-sync pytest -q
+        env:
+          RUN_BROWSER_TESTS: '1'
+      - name: Study CLI smoke test
+        run: |
+          uv run --no-sync admet-study preflight configs/study_example.yaml
+          uv run --no-sync admet-study freeze configs/study_example.yaml --output outputs/ci-study
+          uv run --no-sync admet-study verify outputs/ci-study
+      - name: Validate packaged report assets
+        run: |
+          uv build --wheel --out-dir outputs/dist
+          uv run --no-sync python scripts/check_wheel_assets.py outputs/dist
+  minimum-sklearn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.12.10'
+      - run: uv venv --python 3.12
+      - run: uv pip install -e '.[test,visual]' 'scikit-learn==1.6.1'
+      - run: uv run --no-sync pytest -q

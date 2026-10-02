@@ -1,0 +1,39 @@
+run_name: clintox_toxicity
+task: classification
+seed: 42
+
+dataset:
+  kind: csv
+  path: ../../data/classification/clintox.csv
+  target: CT_TOX
+  smiles_column: smiles
+  test_size: 0.2
+  target_transform: none
+
+features:
+  radius: 2
+  n_bits: 1024
+  include_rdkit_descriptors: true
+
+benchmark:
+  validation_size: 0.2
+  selection_metric: pr_auc
+  classical_hpo:
+    cv_folds: 3
+    n_iter: 3
+    n_jobs: auto
+    scoring: average_precision
+  models:
+    classical: [random_forest, extra_trees, xgboost, lightgbm]
+    neural: [chemprop, chemeleon]
+  neural:
+    accelerator: auto
+    inner_validation_size: 0.15
+    chemprop:
+      candidates:
+        - {epochs: 25, patience: 5, batch_size: 64, depth: 3, message_hidden_dim: 300, ffn_hidden_dim: 300, ffn_num_layers: 1, dropout: 0.10, max_lr: 0.001, init_lr: 0.0001, final_lr: 0.0001}
+        - {epochs: 25, patience: 5, batch_size: 64, depth: 4, message_hidden_dim: 400, ffn_hidden_dim: 300, ffn_num_layers: 2, dropout: 0.15, max_lr: 0.0007, init_lr: 0.00007, final_lr: 0.00007}
+    chemeleon:
+      candidates:
+        - {epochs: 25, patience: 5, batch_size: 64, ffn_hidden_dim: 300, ffn_num_layers: 1, dropout: 0.10, max_lr: 0.001, init_lr: 0.0001, final_lr: 0.0001}
+        - {epochs: 25, patience: 5, batch_size: 64, ffn_hidden_dim: 400, ffn_num_layers: 2, dropout: 0.15, max_lr: 0.0007, init_lr: 0.00007, final_lr: 0.00007}
