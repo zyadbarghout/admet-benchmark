@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
         with:
-          version: '0.12.10'
+          version: '0.13.7'
           enable-cache: true
       - run: uv sync --locked --python 3.12 --extra visual --extra test --extra browser
       - run: uv run --no-sync playwright install --with-deps chromium
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
         with:
-          version: '0.12.10'
+          version: '0.13.7'
       - run: uv venv --python 3.12
       - run: uv pip install -e '.[test,visual]' 'scikit-learn==1.6.1'
       - run: uv run --no-sync pytest -q
