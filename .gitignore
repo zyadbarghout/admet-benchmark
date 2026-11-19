@@ -8,19 +8,25 @@ __pycache__/
 .venv*/
 outputs/
 
-# Preserve the original scripts/notebooks in source control, but keep its
-# private submission corpus and multi-gigabyte generated artifacts local.
-legacy/openadmet_report/submissions/
-legacy/openadmet_report/leaderboard/
-legacy/openadmet_report/tsne_outputs/
-legacy/openadmet_report/mnt/
-legacy/openadmet_report/tmp/
+# Historical scripts, private submissions, notebooks, and generated reports.
+# The maintained package and bundled examples do not depend on this archive.
+legacy/
 
 # Large/reference-only and private local files
-legacy/representation_materials/
 references/*.pdf
 _private_archive/
 
 # Packaging outputs
 build/
 dist/
+
+# Editor, operating-system, and local credential files
+.idea/
+.vscode/
+Thumbs.db
+Desktop.ini
+.env
+.env.*
+!.env.example
+*.bak
+*.bak_*

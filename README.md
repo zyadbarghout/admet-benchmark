@@ -1,234 +1,269 @@
-# Chemistry-aware ADMET model diagnostics
+# ADMET Benchmark
 
-This project helps cheminformaticians understand **where a regression or
-classification model fails chemically**, whether its uncertainty identifies
-those failures, and how competing models behave across endpoints, validation
-folds, and a locked test set.
+Evaluate molecular property predictions and explore **which chemistry a model
+gets wrong**. ADMET refers to absorption, distribution, metabolism, excretion,
+and toxicity: properties that help characterize potential drug molecules.
 
-The primary input is a table of prepared predictions—not a trained estimator.
-Models from Python, notebooks, external teams, or another framework therefore
-use the same validation, statistics, and chemical analysis. The original
-OpenADMET leaderboard and report project is preserved under
-[`legacy/openadmet_report`](legacy/openadmet_report/README.md); the newer
-package does not overwrite it.
+The main workflow accepts CSV prediction tables from any model or framework.
+It validates molecular identities and experiment metadata, computes regression
+or classification metrics, compares models across matching folds, and produces
+interactive HTML reports with molecular structures and chemical-space maps.
+Optional training workflows generate predictions with classical models and
+Chemprop, register cross-validation splits, and calibrate uncertainty.
 
-## What works now
+## What you can do
 
-- Regression and classification with explicit scale/threshold policies.
-- Long-form or wide prediction files from multiple models and endpoints.
-- Validation/test, repeat/fold, preprocessing, and split-strategy context.
-- Chemical-identity, leakage, coverage, and schema audits.
-- Molecule-bootstrap intervals and paired fold summaries; nominal test p-values
-  are exploratory because fold dependence is not resolved.
-- Method-neutral uncertainty scores and prediction intervals, including
-  error-ranking correlations, empirical coverage, and interval width.
-- Interactive chemical-space inspection with structures, SMARTS filters,
-  molecule search, lasso selection, error/uncertainty colouring, fold controls,
-  task-specific diagnostics, and error-retention curves.
-- Violin/KDE/point views that retain the actual observations rather than
-  replacing them with average bars.
+- Evaluate regression predictions or binary classification probabilities using
+  explicit target transforms and decision thresholds.
+- Compare models and endpoints while keeping validation/test, split strategy,
+  preprocessing, repeat, and fold context attached to each result.
+- Audit duplicate chemical identities, missing model coverage, and conflicting
+  observations. Registered studies also check split leakage.
+- Inspect error distributions, structures, SMARTS substructures, chemical-space
+  selections, and optional uncertainty scores or prediction intervals.
+- Export selected molecular cohorts and save report views for later inspection.
+- Train linear, random forest, and ExtraTrees baselines; install optional model
+  dependencies for XGBoost, LightGBM, and Chemprop adapters.
 
-The research principles and remaining work are explicit in
-[`docs/product_vision.md`](docs/product_vision.md). The evidence, risk, and
-implementation audit is maintained in
-[`docs/project_assessment.md`](docs/project_assessment.md). For the current
-project status, ordered roadmap, integration recommendations, and open
-decisions, see [`PROJECT_STATUS.md`](PROJECT_STATUS.md).
+## Installation
 
-## Complete real-data example and audit fixes
-
-The [complete example](docs/complete_real_example.md) trains KSOL, LogD and BBBP
-on registered five-fold/two-seed molecule and scaffold splits, adds full-budget
-BBBP Chemprop CV and a CV+ pilot, and creates final calibrated predictors.
-Its [local landing page](outputs/complete_real_example_2026_09_29/index.html)
-links the full report, trained models, measured outcomes and batch inference.
+Use **Python 3.11 or newer**. Python 3.12 and the committed `uv.lock` are the
+recommended reproducible setup. Run all examples from the repository root.
 
 ```sh
-python scripts/build_complete_example.py --output outputs/my_complete_example
+git clone https://github.com/zyadbarghout/admet-benchmark.git
+cd admet-benchmark
+uv sync --locked --python 3.12 --extra visual --extra test
 ```
 
-The default requires the `models` and `visual` extras and runs real training.
-Use `--validate-only` to check the protocol or `--classical-only` to explicitly
-exclude the neural addon. The guide distinguishes a new locked-environment run
-from reuse of the supplied checkpoints in their exact recorded environment.
+The repository is private, so cloning requires access through your GitHub account.
+The `visual` extra enables interactive Plotly reports. The examples below use
+`uv run --no-sync` to keep the installed environment unchanged.
 
-The September 28 audit defects have regression coverage: text identities are
-preserved, canonical chemistry determines bootstrap units, fitting and locked-test
-leakage checks are stricter, classification plots share threshold policy, and
-registered runs/checkpoints enforce runtime and feature compatibility. Reports
-also support `--delivery assets` for on-demand local maps and depictions.
-The [completion report](docs/audit_resolution_2026_10_02.md) records the fixes,
-measured verification and remaining work.
+If you prefer pip, create and activate an environment first:
 
-## Earlier September 9 cross-validation study
-
-The earlier measured development benchmark completed 120 registered jobs on KSOL
-and BBBP: five outer folds, molecule/scaffold splits, Morgan/RDKit features and
-three classical model families. It produces disjoint-calibration regression
-intervals and classification prediction sets, with artifact hashes and resumable
-training. The report adds chemical applicability, property-cliff stress cohorts
-and interval decisions around an assay cutoff. A local SMILES prediction command,
-CV+ pilot and short Chemprop integration run are included.
-
-Open the [real CV report](outputs/real_cv_uq_2026_09_09/chemical_model_diagnostics.html),
-read the [measured findings](docs/real_cv_uq_outcome_2026_09_09.md), or follow the
-[run/resume/predict guide](docs/real_cv_uq.md). Overall KSOL interval coverage is
-near 90%, but the RDKit forest's scaffold cliff cohort reaches only 68%:
-chemical stress diagnostics change the interpretation of the aggregate result.
-
-## Earlier workspace refinement
-
-- Register a development study with `admet-study preflight`, `freeze` and
-  `verify`; save shared molecular partitions before fitting models.
-- Inspect context/model coverage, save and restore views tied to their report, export
-  selected cohorts, and inspect structures with the keyboard.
-- Switch Morgan, RDKit or combined representations across t-SNE, GTM and PCA.
-- Work in separate regression/classification tabs, or opt into merged exploration.
-- Search all included molecule IDs/SMILES with paginated inspection; define
-  regression error bands and inspect clickable GTM node pies.
-- Compare fold contexts and submitted UQ, including a synthetic 5/10-fold demo.
-- Reproduce dependencies with `uv.lock` and run offline browser acceptance tests.
-
-Start with the [five-minute tutorial](docs/five_minute_tutorial.md), then read
-the [study contract](docs/study_registration.md) and the
-[research and delivery plan](docs/research_and_delivery_plan.md).
-The [workspace method and research notes](docs/chemical_workspace_v3.md) explain
-GTM, thresholds, UQ and the new reports. The original
-[verification record](docs/verification_2026_09_08.md) and latest
-[workspace verification](docs/verification_workspace_v3.md) record the checks.
-The original `admet-study` registry supports repeated holdouts. The new
-`admet-cv` contract drives true outer-fold training with fixed parameters; neither
-contract by itself certifies confirmatory inference.
-
-## Install
-
-Python 3.11 or newer is required; Python 3.12 is the clean-environment test target.
-The reproducible installation uses `uv sync --locked --python 3.12 --extra visual --extra test`.
-Standard pip packaging is also supported:
-
-```bash
+```sh
 python -m venv .venv
-. .venv/bin/activate
-python -m pip install -e '.[visual,test]'
 ```
 
-The optional training adapters for Chemprop, CheMeleon, XGBoost, and LightGBM
-are installed with `python -m pip install -e '.[models,visual,test]'`.
+On Windows PowerShell:
 
-## Evaluate predictions
-
-Map columns and experiment metadata in YAML, validate without writing results,
-then produce the evaluation bundle:
-
-```bash
-admet-evaluate validate configs/evaluation_regression_example.yaml
-admet-evaluate run configs/evaluation_regression_example.yaml
+```powershell
+.venv\Scripts\Activate.ps1
 ```
 
-For a long-form file, each row represents one model prediction for one measured
-sample. The core mappings are:
+On macOS/Linux:
 
-```yaml
-schema_version: 1
-task: regression
-output_dir: outputs/my_evaluation
-
-predictions:
-  path: predictions.csv
-  columns:
-    sample_id: sample_id
-    molecule_id: molecule_id
-    smiles: smiles
-    endpoint: endpoint
-    model: model
-    partition: partition
-    repeat: repeat
-    fold: fold
-    observed: observed
-    prediction: prediction
-    uncertainty: uncertainty
-    prediction_lower: prediction_lower
-    prediction_upper: prediction_upper
-  defaults:
-    split_strategy: scaffold
-    preprocessing: fragment_parent
-
-target_transform:
-  default: log10
-
-uncertainty:
-  higher_is_more_uncertain: true
-  scale: evaluation
-  interval_confidence: 0.9
+```sh
+source .venv/bin/activate
 ```
 
-Uncertainty is optional. When supplied, it must be complete within a model/fold
-context and larger values must mean less certainty. Interval bounds are also
-optional but must be supplied as a valid pair.
+Then install the package:
 
-See [`docs/evaluation_cli.md`](docs/evaluation_cli.md) for wide-form mapping,
-classification thresholds, exact validation rules, output files, and
-statistical comparisons.
-
-## Inspect performance chemically
-
-The chemical report accepts canonical evaluator output directories directly,
-or the older completed model-arena directories:
-
-```bash
-admet-chemical-report \
-  outputs/evaluation_a \
-  outputs/evaluation_b \
-  --output outputs/chemical_analysis.html \
-  --smarts 'c1ccccc1'
+```sh
+python -m pip install -e ".[visual,test]"
 ```
 
-Use the partition, repeat, and fold controls to separate validation behavior
-from locked-test behavior. Select a chemical region or SMARTS motif to update
-errors, distributions, structures, uncertainty diagnostics, and shared-molecule
-rankings without recalculating or selecting a model. The report opens on
-validation, shows all endpoint-specific preprocessing/split contexts by
-default, and offers exact context labels for the selected diagnostics endpoint.
-Context/model coverage appears before ranking. Save/load view recipes bind the
-filters and lasso to the report signature; cohort CSV export retains context.
-Raw results, the data dictionary and provenance stay collapsed until requested.
-The error card and selection distribution use only the diagnostics endpoint.
-Full-fold model metrics are never recomputed from chemical filters.
-Use `--embedding pca` for an alternative to the default t-SNE map.
+With an activated pip environment, omit `uv run --no-sync` from the commands below.
+Installation needs internet access; the bundled quickstart runs locally afterward.
 
-`--max-points` limits interactive payload size using complete chemical
-histories: all retained folds and endpoints for a sampled canonical molecule
-stay together. The limit is therefore a soft ceiling when one molecule alone
-has more observations than the configured value. Self-contained reports are
-convenient to share but can be tens of megabytes because Plotly and molecule
-depictions are embedded; externalized assets remain planned for larger studies.
+## Working examples
 
-## Produce predictions with the bundled model arena
+### 1. Evaluate regression predictions
 
-The training workflow remains available as one example producer:
+The bundled table contains illustrative predictions for KSOL (solubility) and
+LogD (lipophilicity), with two models and repeated validation folds.
+The configuration applies `log10` to KSOL and leaves LogD on its supplied scale.
 
-```bash
-admet-benchmark-arena configs/benchmarks/ksol_model_arena.yaml
-admet-benchmark-arena configs/benchmarks/bbbp_model_arena.yaml
+```sh
+uv run --no-sync admet-evaluate validate configs/evaluation_regression_example.yaml
+uv run --no-sync admet-evaluate run configs/evaluation_regression_example.yaml
 ```
 
-It performs split-consistent tuning on development data, chooses a model from
-validation performance, and evaluates the locked test only afterward. Each run
-writes the same canonical `evaluation/` bundle consumed by the reports.
+Open `outputs/evaluation_regression_example/report.html` to inspect metrics and
+prediction distributions. `validate` checks inputs without writing a result bundle.
 
-More detail is available in the
-[`pipeline and reporting guide`](docs/using_pipeline_and_reports.md) and
-[`architecture note`](docs/architecture.md).
+### 2. Evaluate classification probabilities
+
+This example reads a wide CSV with one probability column per model. It evaluates
+BBBP (blood-brain barrier permeability) using the configured threshold of **0.42**.
+
+```sh
+uv run --no-sync admet-evaluate validate configs/evaluation_classification_example.yaml
+uv run --no-sync admet-evaluate run configs/evaluation_classification_example.yaml
+```
+
+Open `outputs/evaluation_classification_example/report.html`. Outputs include
+ROC AUC, PR AUC, MCC, and threshold-dependent metrics.
+
+The prediction examples are small software demonstrations. Their model names
+are labels for supplied predictions; these commands do not train those models
+or establish their scientific performance.
+
+### 3. Explore errors across chemical space
+
+After running examples 1 and 2:
+
+```sh
+uv run --no-sync admet-chemical-report outputs/evaluation_regression_example outputs/evaluation_classification_example --embedding pca --output outputs/quickstart/chemical_diagnostics.html
+```
+
+Open `outputs/quickstart/chemical_diagnostics.html` directly in your browser.
+The default delivery embeds the plots and structures for offline use.
+Choose an endpoint and model, search molecular IDs or SMILES, filter by a
+substructure, or select a region of the map. Inspect the selected molecules,
+save the view, and export a cohort CSV. Full-fold metrics keep their original
+population when you change chemical filters.
+
+To run all three examples with one command and store everything under a single
+directory:
+
+```sh
+uv run --no-sync python examples/quickstart.py
+```
+
+You can override the destination with `--output-dir outputs/my_demo`.
+The script can be rerun and replaces its generated evaluation files.
+With the bundled inputs, it writes 32 regression predictions with 40 metric rows
+and 32 classification predictions with 120 metric rows, then prints the report's
+local browser URL.
+
+### 4. Register reproducible study splits
+
+The synthetic study example freezes molecule-level assignments and records
+data/configuration hashes before any model fitting:
+
+```sh
+uv run --no-sync admet-study preflight configs/study_example.yaml
+uv run --no-sync admet-study freeze configs/study_example.yaml --output outputs/tutorial_study
+uv run --no-sync admet-study verify outputs/tutorial_study
+```
+
+Choose a new output directory each time you run `freeze`. This example uses
+artificial observations and is independent of the prepared prediction examples.
+See the [study registration guide](docs/study_registration.md) for the contract.
+
+## Use your own predictions
+
+Copy one of the two `configs/evaluation_*_example.yaml` files and map your CSV
+column names. Dataset and output paths in YAML are relative to the configuration
+file. An explicit CLI `--output-dir` is relative to your current directory.
+
+A long-form table typically has one row per sample/model/endpoint/fold:
+
+```csv
+sample_id,molecule_id,smiles,endpoint,model,partition,repeat,fold,observed,prediction
+sample-001,mol-001,CCO,solubility,baseline,validation,0,0,1.2,1.0
+sample-002,mol-002,CCN,solubility,baseline,validation,0,0,2.1,2.4
+```
+
+This snippet shows the shape; use a full dataset with sufficient molecules for
+metrics and uncertainty estimates. Configure target transforms explicitly, and
+set a decision threshold for every classification endpoint. Optional uncertainty
+columns must have declared direction/scale, and interval bounds must form valid
+pairs. The [evaluation guide](docs/evaluation_cli.md) covers long/wide mapping,
+validation requirements, threshold policies, and uncertainty handling.
+
+Each evaluation writes:
+
+| File | Contents |
+| --- | --- |
+| `report.html` | Interactive evaluation report |
+| `predictions.csv` | Canonical prediction records and derived errors |
+| `fold_metrics.csv` | Metrics per model, endpoint, partition, repeat, and fold |
+| `metric_distributions.csv` | Summaries across matching result contexts |
+| `coverage_audit.csv` | Model and molecule coverage |
+| `statistical_comparisons.csv` | Exploratory paired model comparisons |
+| `validation_report.json` | Input audit findings |
+| `resolved_config.yaml` | Configuration used for the evaluation |
+| `evaluation_manifest.json` | Source and output provenance |
+
+## Training and larger studies
+
+The quickstart needs no trained checkpoints or external datasets. For model
+training, see the [pipeline guide](docs/using_pipeline_and_reports.md),
+[cross-validation guide](docs/real_cv_uq.md), and
+[complete real-data example](docs/complete_real_example.md).
+
+The larger example uses the bundled KSOL, LogD, and BBBP snapshots. To check its
+protocol without fitting models:
+
+```sh
+uv run --no-sync python scripts/build_complete_example.py --validate-only --output outputs/protocol_check
+```
+
+For a fresh full training run, install the optional models extra first:
+
+```sh
+uv sync --locked --python 3.12 --extra models --extra visual --extra test
+uv run --no-sync python scripts/build_complete_example.py --output outputs/my_complete_example
+```
+
+This runs a substantial cross-validation study, including a neural addon; it is
+not a quickstart. `--classical-only` excludes that addon. Generated reports,
+trained models, and previous local study results are excluded from Git and must
+be built locally. Checkpoint loading enforces its recorded runtime and feature
+compatibility; use a new registration after changing code or dependencies.
+
+## Verification
+
+Run the unit and integration suite:
+
+```sh
+uv run --no-sync pytest -q
+```
+
+For the offline Chromium acceptance tests:
+
+```sh
+uv sync --locked --python 3.12 --extra visual --extra test --extra browser
+uv run --no-sync playwright install chromium
+```
+
+Then on PowerShell:
+
+```powershell
+$env:RUN_BROWSER_TESTS = "1"
+uv run --no-sync pytest -q
+```
+
+Or on macOS/Linux:
+
+```sh
+RUN_BROWSER_TESTS=1 uv run --no-sync pytest -q
+```
+
+GitHub Actions runs the tests, browser checks, study CLI workflow, and wheel
+resource checks. Browser tests are skipped unless `RUN_BROWSER_TESTS=1`.
 
 ## Repository layout
 
 ```text
-src/admet_benchmark/       maintained package
-configs/                   reproducible evaluation and training examples
-data/                      small example inputs
-tests/                     behavioral and report-contract tests
-docs/                      product, architecture, and usage guides
-legacy/openadmet_report/   preserved original challenge/report workspace
-references/                supplied research references (local PDFs ignored)
-outputs/                   generated runs and preserved current reports (ignored)
+src/admet_benchmark/   Maintained package, CLI tools, report assets, and schemas
+configs/              Evaluation, registration, and training configurations
+data/                 Small prediction examples, synthetic data, real snapshots
+examples/             Runnable quickstart
+tests/                Scientific behavior and browser acceptance tests
+scripts/              Larger study builders and artifact checks
+docs/                 Usage guides, architecture, and historical audit records
+references/           Research reference index
+outputs/              Generated results (ignored by Git)
 ```
+
+The original submission workspace and private research archives remain local
+and are excluded from this repository. They are not required by the quickstart
+or maintained package. Historical documents may refer to those local artifacts.
+
+## Interpretation and data provenance
+
+Reports support development diagnostics. Overlapping validation folds are
+dependent, so nominal comparison p-values are exploratory. Chemical-space
+distance is not a calibrated applicability guarantee, and empirical uncertainty
+coverage can change under chemical shift or post-hoc cohort selection.
+
+The [synthetic study data](data/tutorial/README.md) is explicitly artificial and
+dedicated to CC0. Real snapshots retain their providers' terms; see the
+[classification data notes](data/classification/README.md) and
+[real-data provenance notes](data/real_demo/README.md). No repository-wide license
+has been declared. The [architecture](docs/architecture.md) and
+[project assessment](docs/project_assessment.md) describe design and limitations.

@@ -25,6 +25,8 @@ jobs:
           uv run --no-sync admet-study preflight configs/study_example.yaml
           uv run --no-sync admet-study freeze configs/study_example.yaml --output outputs/ci-study
           uv run --no-sync admet-study verify outputs/ci-study
+      - name: Run documented quickstart
+        run: uv run --no-sync python examples/quickstart.py
       - name: Validate packaged report assets
         run: |
           uv build --wheel --out-dir outputs/dist
